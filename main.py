@@ -11,7 +11,7 @@ app = FastAPI()
 application = Application.builder().token(BOT_TOKEN).build()
 register_handlers(application)
 
-# Webhook route
+# Telegram webhook route
 @app.post("/webhook")
 async def telegram_webhook(req: Request):
     data = await req.json()
@@ -19,10 +19,15 @@ async def telegram_webhook(req: Request):
     await application.update_queue.put(update)
     return {"ok": True}
 
-# Homepage route (prevents 404)
+# Homepage route
 @app.get("/")
 async def home():
     return {"status": "Bot is running!"}
+
+# Catch-all POST route (405-safe)
+@app.post("/")
+async def catch_all_post():
+    return {"error": "Use /webhook for Telegram updates"}, 405
 
 # Set webhook on startup
 async def set_webhook():
