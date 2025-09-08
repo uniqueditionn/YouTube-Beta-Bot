@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from fastapi import FastAPI, Request
 from telegram import Update
@@ -46,12 +45,9 @@ async def test():
 async def catch_all_post():
     return {"error": "Use /webhook for Telegram updates"}, 405
 
-# Set webhook on startup
-async def set_webhook():
+# Set webhook on startup (awaited to ensure Render keeps process alive)
+@app.on_event("startup")
+async def startup_event():
     await application.bot.delete_webhook()
     await application.bot.set_webhook(WEBHOOK_URL)
     logging.info(f"Webhook set to {WEBHOOK_URL}")
-
-@app.on_event("startup")
-async def startup_event():
-    asyncio.create_task(set_webhook())
