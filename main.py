@@ -19,6 +19,11 @@ async def telegram_webhook(req: Request):
     await application.update_queue.put(update)
     return {"ok": True}
 
+# Homepage route (prevents 404)
+@app.get("/")
+async def home():
+    return {"status": "Bot is running!"}
+
 # Set webhook on startup
 async def set_webhook():
     await application.bot.delete_webhook()
