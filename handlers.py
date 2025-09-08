@@ -37,4 +37,5 @@ async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         clean_file(file_path)
         await msg.delete()
     except Exception as e:
+        logging.error(f"Download error: {str(e)}")
         await query.message.reply_text(f"Error: {str(e)}")
