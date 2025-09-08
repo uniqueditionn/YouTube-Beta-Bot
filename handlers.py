@@ -1,13 +1,17 @@
+import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, MessageHandler, CallbackQueryHandler, filters
 from downloader import download_audio, download_video
 from utils import clean_file
+
+logging.basicConfig(level=logging.INFO)
 
 def register_handlers(app):
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_link))
     app.add_handler(CallbackQueryHandler(handle_button))
 
 async def handle_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logging.info(f"Received message: {update.message.text}")
     url = update.message.text
     keyboard = [
         [InlineKeyboardButton("🎵 Music", callback_data=f"audio|{url}")],
